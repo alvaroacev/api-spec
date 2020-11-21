@@ -11,7 +11,7 @@ info:
 servers:
   - url: 'http://localhost:3000'
 paths:
-  '/collateral/{reportId}':
+  '/collaterals/{reportId}':
     parameters:
       - schema:
           type: string
@@ -49,8 +49,83 @@ paths:
         '404':
           description: User Not Found
       operationId: get-collateral-id
-      description: Retrieve the collateral report with the matching report ID.
-  /user: {}
+      description: Retrieves the collateral report with the matching report ID.
+  /collaterals:
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Collateral'
+              examples:
+                example-1:
+                  value:
+                    - report_id: Abcd123
+                      date_time: '2019-08-24T14:15:22Z'
+                      frequency: DAILY
+                      currency: GBP
+                      calculation_date: '1997-10-31'
+                      obligation:
+                        party_a: CHASGBLN
+                        servicing_party_a: CHASGBLN
+                        party_b: BARCGBLV
+                        exposure_type: BFWD
+                      agreement:
+                        details: agreement description
+                        identification: Abcd123-112
+                        date: '2019-08-24'
+                    - report_id: 1664-FR
+                      date_time: '2020-08-24T14:15:22Z'
+                      frequency: DAILY
+                      currency: GBP
+                      calculation_date: '1997-10-31'
+                      obligation:
+                        party_a: CHASGBLN
+                        servicing_party_a: CHASGBLN
+                        party_b: BARCGBLV
+                        exposure_type: BFWD
+                      agreement:
+                        details: agreement description
+                        identification: Abcd123-112
+                        date: '2019-08-24'
+            application/xml:
+              schema:
+                type: object
+                properties: {}
+      operationId: get-collaterals
+      description: 'Retrieves all the collateral reports or the ones matching any of the queries parameters'
+      parameters:
+        - schema:
+            type: string
+            format: date
+            example: '2020-10-30'
+          in: query
+          name: creation_date
+          description: Date at which the report was created.
+        - schema:
+            type: string
+            enum:
+              - Daily
+              - Intra_Day
+              - On_Demand
+            example: Daily
+          in: query
+          description: Frequency of the report.
+          name: frequency
+        - schema:
+            type: string
+            pattern: '[A-Z]{3,3}'
+            example: GBP
+          in: query
+          description: Indicates the currency used for the calculation of the guarantee fund.
+          name: currency
+    parameters: []
 components:
   schemas:
     Collateral:

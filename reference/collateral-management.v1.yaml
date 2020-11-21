@@ -1,0 +1,209 @@
+openapi: 3.0.0
+info:
+  title: collateral management
+  version: '1.0'
+  contact:
+    name: Al
+    url: 'http://github.com/alvaroacev/api-spec'
+  license:
+    name: Apache
+  description: 'These collateral report APIs are used to provide the details of the valuation of the collateral, that is, the valuation of securities collateral, cash collateral or other type of collateral, posted at a specific calculation date.'
+servers:
+  - url: 'http://localhost:3000'
+paths:
+  '/collateral/{reportId}':
+    parameters:
+      - schema:
+          type: string
+        name: reportId
+        in: path
+        required: true
+    get:
+      summary: Get User Info by User ID
+      tags: []
+      responses:
+        '200':
+          description: User Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Collateral'
+              examples:
+                example-1:
+                  value:
+                    report_id: Abcd123
+                    date_time: '2019-08-24T14:15:22Z'
+                    frequency: DAILY
+                    currency: GBP
+                    calculation_date: '1997-10-31'
+                    obligation:
+                      party_a: CHASGBLN
+                      servicing_party_a: string
+                      party_b: BARCGBLV
+                      exposure_type: BFWD
+                    agreement:
+                      details: agreement description
+                      identification: Abcd123-112
+                      date: '2019-08-24'
+        '404':
+          description: User Not Found
+      operationId: get-users-userId
+      description: Retrieve the collateral report with the matching report ID.
+    patch:
+      summary: Update User Information
+      operationId: patch-users-userId
+      description: Update the infromation of an existing user.
+  /user:
+    post:
+      summary: Create New User
+      operationId: post-user
+      responses:
+        '200':
+          description: User Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+              examples:
+                New User Bob Fellow:
+                  value:
+                    id: 12
+                    firstName: Bob
+                    lastName: Fellow
+                    email: bob.fellow@gmail.com
+                    dateOfBirth: '1996-08-24'
+                    emailVerified: false
+                    createDate: '2020-11-18'
+        '400':
+          description: Missing Required Information
+        '409':
+          description: Email Already Taken
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                firstName:
+                  type: string
+                lastName:
+                  type: string
+                email:
+                  type: string
+                dateOfBirth:
+                  type: string
+                  format: date
+              required:
+                - firstName
+                - lastName
+                - email
+                - dateOfBirth
+            examples:
+              Create User Bob Fellow:
+                value:
+                  firstName: Bob
+                  lastName: Fellow
+                  email: bob.fellow@gmail.com
+                  dateOfBirth: '1996-08-24'
+        description: Post the necessary fields for the API to create a new user.
+      description: Create a new user.
+components:
+  schemas:
+    Collateral:
+      title: Collateral
+      type: object
+      description: 'Provides the details of the valuation of the collateral, that is, the valuation of securities collateral, cash collateral or other type of collateral, posted at a specific calculation date.'
+      x-examples:
+        example-1:
+          report_id: Abcd123
+          date_time: '2019-08-24T14:15:22Z'
+          frequency: DAILY
+          currency: GBP
+          calculation_date: '1997-10-31'
+          obligation:
+            party_a: CHASGBLN
+            servicing_party_a: string
+            party_b: BARCGBLV
+            exposure_type: BFWD
+          agreement:
+            details: agreement description
+            identification: Abcd123-112
+            date: '2019-08-24'
+      properties:
+        report_id:
+          type: string
+          description: Unique identification of the report.
+        date_time:
+          format: date-time
+          type: string
+        frequency:
+          type: string
+          enum:
+            - DAILY
+            - INTRADAY
+            - ONDEMAND
+        currency:
+          type: string
+          pattern: '[A-Z]{3,3}'
+        calculation_date:
+          type: string
+          format: date
+          example: '1997-10-31'
+        obligation:
+          type: object
+          description: Set to true if the user's email has been verified.
+          required:
+            - party_a
+            - party_b
+          properties:
+            party_a:
+              type: string
+              pattern: '[A-Z]{6,6}[A-Z2-9][A-NP-Z0-9]([A-Z0-9]{3,3}){0,1}'
+              description: Defines one of the entities associated with the collateral agreement.
+            servicing_party_a:
+              type: string
+              pattern: '[A-Z]{6,6}[A-Z2-9][A-NP-Z0-9]([A-Z0-9]{3,3}){0,1}'
+              description: Specifies the party that is acting on behalf of party A and that offers collateral management services.
+            party_b:
+              type: string
+              description: Defines the other entity associated with the collateral agreement.
+              maxLength: 35
+            exposure_type:
+              type: string
+              enum:
+                - BFWD
+                - PAYM
+                - CCPC
+              description: Specifies the underlying business area or type of trade causing the collateral movement.
+        agreement:
+          description: Agreement details for the over the counter market.
+          type: object
+          properties:
+            details:
+              type: string
+            identification:
+              type: string
+            date:
+              type: string
+              format: date
+          required:
+            - identification
+      required:
+        - report_id
+        - date_time
+        - frequency
+        - currency
+        - obligation
+  securitySchemes:
+    API Key - 1:
+      type: oauth2
+      flows:
+        implicit:
+          authorizationUrl: 'https://api.swift.com/oauth2/v1/token'
+          refreshUrl: 'https://api.swift.com/oauth2/v1/token'
+          scopes: {}
+        password:
+          tokenUrl: ''
+          refreshUrl: ''
+          scopes: {}
+      description: request token and refresh token on same URL

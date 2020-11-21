@@ -1,9 +1,9 @@
 openapi: 3.0.0
 info:
-  title: collateral management
+  title: Collateral Management
   version: '1.0'
   contact:
-    name: Al
+    name: alvaroacev
     url: 'http://github.com/alvaroacev/api-spec'
   license:
     name: Apache
@@ -47,12 +47,12 @@ paths:
                       identification: Abcd123-112
                       date: '2019-08-24'
         '404':
-          description: User Not Found
+          description: Collateral Not Found
       operationId: get-collateral-id
       description: Retrieves the collateral report with the matching report ID.
   /collaterals:
     get:
-      summary: Your GET endpoint
+      summary: Retrieves all the collateral reports or the ones matching any of the queries parameters
       tags:
         - Collateral Management
       responses:
@@ -215,16 +215,12 @@ components:
         - currency
         - obligation
   securitySchemes:
-    API Key - 1:
+    API Tokens:
       type: oauth2
       flows:
-        implicit:
-          authorizationUrl: 'https://api.swift.com/oauth2/v1/token'
-          refreshUrl: 'https://api.swift.com/oauth2/v1/token'
-          scopes: {}
         password:
-          tokenUrl: ''
-          refreshUrl: ''
+          tokenUrl: /oauth2/v1/token
+          refreshUrl: /oauth2/v1/token
           scopes: {}
       description: request token and refresh token on same URL
 tags:

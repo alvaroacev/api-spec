@@ -53,7 +53,8 @@ paths:
   /collaterals:
     get:
       summary: Your GET endpoint
-      tags: []
+      tags:
+        - Collateral Management
       responses:
         '200':
           description: OK
@@ -99,7 +100,7 @@ paths:
                 type: object
                 properties: {}
       operationId: get-collaterals
-      description: 'Retrieves all the collateral reports or the ones matching any of the queries parameters'
+      description: Retrieves all the collateral reports or the ones matching any of the queries parameters
       parameters:
         - schema:
             type: string

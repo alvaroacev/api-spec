@@ -50,6 +50,8 @@ paths:
           description: Collateral Not Found
       operationId: get-collateral-id
       description: Retrieves the collateral report with the matching report ID.
+      security:
+        - API-Tokens: []
   /collaterals:
     get:
       summary: Retrieves all the collateral reports or the ones matching any of the queries parameters
@@ -126,6 +128,8 @@ paths:
           in: query
           description: Indicates the currency used for the calculation of the guarantee fund.
           name: currency
+      security:
+        - API-Tokens: []
     parameters: []
 components:
   schemas:
@@ -215,7 +219,7 @@ components:
         - currency
         - obligation
   securitySchemes:
-    API Tokens:
+    API-Tokens:
       type: oauth2
       flows:
         password:
